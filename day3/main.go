@@ -10,17 +10,9 @@ import (
 func main() {
 	lines := advent_utils.LoadData("input.txt")
 	commonItems := findCommonItems(lines)
-	println(partOne(commonItems))
-}
-
-func partOne(commonItems []string) int64 {
-	var sum int64 = 0
-
-	for i := 0; i < len(commonItems); i++ {
-		sum += getPriority(commonItems[i])
-	}
-
-	return sum
+	commonItems2 := findCommonItems2(lines)
+	println(sumPriorities(commonItems))
+	println(sumPriorities(commonItems2))
 }
 
 func findCommonItems(contents []string) []string {
@@ -42,6 +34,35 @@ func findCommonItems(contents []string) []string {
 	}
 
 	return commonItems
+}
+
+func findCommonItems2(contents []string) []string {
+	commonItems := make([]string, 0)
+
+	// Work in groups of three
+	for i := 0; i < len(contents); i += 3 {
+		items := strings.Split(contents[i], "")
+
+		// Check all of the characters in the first rucksack of the group against the other two rucksacks
+		for _, c := range items {
+			if strings.Contains(contents[i+1], c) && strings.Contains(contents[i+2], c) {
+				commonItems = append(commonItems, c)
+				break
+			}
+		}
+	}
+
+	return commonItems
+}
+
+func sumPriorities(commonItems []string) int64 {
+	var sum int64 = 0
+
+	for i := 0; i < len(commonItems); i++ {
+		sum += getPriority(commonItems[i])
+	}
+
+	return sum
 }
 
 func getPriority(c string) int64 {
